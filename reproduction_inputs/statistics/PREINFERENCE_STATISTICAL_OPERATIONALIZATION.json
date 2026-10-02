@@ -1,0 +1,51 @@
+{
+  "protocol_id": "DS004080-primary-statistical-operationalization-v1.0",
+  "timing": "FROZEN_BEFORE_EXTERNAL_MODEL_INFERENCE",
+  "external_model_performance_observed_before_freeze": false,
+
+  "primary_endpoint": {
+    "response": "late_rms_z",
+    "context_k": 10,
+    "contrast": "relation - relation_perm",
+    "metric": "patient-level mean Spearman map correlation across 20 frozen repeats",
+    "group_statistic": "mean paired patient delta"
+  },
+
+  "randomization_test": {
+    "null": "patient-level exchangeability under independent sign flips",
+    "prespecified_target": "two-sided sign-flip randomization test on mean paired delta",
+    "exact_enumeration_states": "2^74",
+    "exact_enumeration_feasible": false,
+    "operational_method": "fixed-seed Monte Carlo approximation to the same sign-flip randomization distribution",
+    "n_randomizations": 10000000,
+    "seed": 20260927,
+    "p_value_rule": "(extreme + 1) / (B + 1)",
+    "alpha": 0.05,
+    "mc_binomial_95ci_reported": true
+  },
+
+  "bootstrap": {
+    "statistic": "mean paired patient delta",
+    "n_resamples": 200000,
+    "seed": 20260928,
+    "ci": "percentile 95%"
+  },
+
+  "relation_permutation_rng": {
+    "seed_root": 20260926,
+    "rule": "seed_root + subject_ordinal*100000000 + repeat*1000000 + context_k*10000 + query_index",
+    "subject_ordinal": "1-based lexicographic order of the frozen 74-subject cohort",
+    "query_index": "0-based position in the frozen query_sites list"
+  },
+
+  "secondary_family": {
+    "multiplicity": "Holm across 6 prespecified endpoints",
+    "mc_randomizations_per_endpoint": 2000000,
+    "mc_seed_root": 20261000
+  },
+
+  "sensitivity_only": [
+    "exact two-sided binomial sign test on nonzero patient deltas",
+    "Wilcoxon signed-rank test"
+  ]
+}

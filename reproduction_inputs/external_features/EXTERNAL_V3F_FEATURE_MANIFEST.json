@@ -1,0 +1,39 @@
+{
+  "feature_protocol_id": "DS004080-V3f-external-features-v1.0",
+  "created_at_utc": "2026-09-27T03:14:26.156072+00:00",
+  "phenotype_map_sha256": "7956a52b168c64266c656ffdfd6576dd23e6a1cc5857297b677e33609b87094e",
+  "external_lockbox_sha256": "8170555317e6a2b510cb7ef1bbb603ba6a4220ec92a0b50cc32c29392f66cf6d",
+  "electrode_adapter_source": "/home/dell/jiaxing/bby/pcnd/results/external_lockbox/ds004080_lockbox_freeze_dryrun_v1/electrodes_anatomical_adapter.csv",
+  "electrode_adapter_sha256": "5f856003ff4fbe4752d2b6d571233cee397ca1429f3abd66f0c32a62fc0e5b03",
+  "pair_features": [
+    "mni_mid_x",
+    "mni_mid_y",
+    "mni_mid_z",
+    "rec_mni_x",
+    "rec_mni_y",
+    "rec_mni_z",
+    "mni_dx",
+    "mni_dy",
+    "mni_dz",
+    "log_mni_distance",
+    "mni_axis_xx",
+    "mni_axis_yy",
+    "mni_axis_zz",
+    "mni_axis_xy",
+    "mni_axis_xz",
+    "mni_axis_yz"
+  ],
+  "n_rows": 290758,
+  "n_subjects": 74,
+  "n_sites": 4135,
+  "max_midpoint_reconstruction_error": 2.864289338439558e-14,
+  "max_bipolar_distance_reconstruction_error": 1.5987211554602254e-14,
+  "roi_known_fraction": {
+    "stim_a_roi": 0.7414241396625373,
+    "stim_b_roi": 0.7530076558512577,
+    "recording_roi": 0.7369255532091981
+  },
+  "feature_table_sha256": "18c8e9d1333941f3f8b51a30829cd74cf4aa4acb4108aaac5e2d34ab8707b48b",
+  "model_checkpoint_loaded": false,
+  "external_model_performance_observed": false
+}

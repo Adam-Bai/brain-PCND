@@ -1,0 +1,10 @@
+# Audit/statistics dependencies. Add PyTorch separately for external inference.
+name: pcnd-minimal
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - numpy=2.2
+  - pandas=2.3
+  - scipy=1.15
+  - pip

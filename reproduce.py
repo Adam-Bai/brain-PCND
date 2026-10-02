@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import shutil
 import subprocess
 import sys
@@ -48,6 +49,107 @@ def require(path: Path) -> Path:
 
 def pass_msg(msg):
     print(f"[PASS] {msg}")
+
+
+EXPECTED_INFERENCE_HASHES = {
+    "FROZEN_REPEAT_METRICS.csv.gz":
+        "3aa6e417972a1b18a511e9d1af70dddd70b4fd72c7db3bed0aadb436b73f49c8",
+    "FROZEN_PATIENT_METRIC_SUMMARY.csv":
+        "0a4b5940653a82c75db9fabc2b256095be58eca891203ecd9f46d0e9d08f5192",
+}
+
+
+def compare_scientific_value(actual, expected, path):
+    """Fail on changed fields, types, nonfinite values, or numerical drift.
+
+    Relative tolerance handles serialization/platform rounding without an
+    absolute tolerance that could hide changes in very small P values.
+    """
+    if isinstance(expected, dict):
+        if not isinstance(actual, dict) or set(actual) != set(expected):
+            raise RuntimeError(f"{path}: field names differ")
+        for key in expected:
+            compare_scientific_value(actual[key], expected[key], f"{path}.{key}")
+    elif isinstance(expected, list):
+        if not isinstance(actual, list) or len(actual) != len(expected):
+            raise RuntimeError(f"{path}: list length differs")
+        for i, (a, b) in enumerate(zip(actual, expected)):
+            compare_scientific_value(a, b, f"{path}[{i}]")
+    elif isinstance(expected, bool):
+        if type(actual) is not bool or actual != expected:
+            raise RuntimeError(f"{path}: Boolean differs")
+    elif isinstance(expected, int):
+        if type(actual) is not int or actual != expected:
+            raise RuntimeError(f"{path}: integer differs")
+    elif isinstance(expected, float):
+        if (type(actual) not in (int, float) or not math.isfinite(actual)
+                or not math.isfinite(expected)
+                or not math.isclose(actual, expected, rel_tol=1e-12, abs_tol=0.0)):
+            raise RuntimeError(f"{path}: {actual!r} differs from {expected!r}")
+    elif type(actual) is not type(expected) or actual != expected:
+        raise RuntimeError(f"{path}: value differs")
+
+
+def compare_result(actual, expected):
+    # Statistics CSV serialization can differ across library versions.
+    # Their hashes are validated against actual generated files separately;
+    # their scientific contents are compared with the same numeric tolerance.
+    ignored = {"created_at_utc", "patient_delta_sha256", "secondary_results_sha256"}
+    for value in (actual, expected):
+        for key in ("patient_delta_sha256", "secondary_results_sha256"):
+            if not isinstance(value.get(key), str) or len(value[key]) != 64:
+                raise RuntimeError(f"result.{key}: missing or invalid output hash")
+    a = {k: v for k, v in actual.items() if k not in ignored}
+    b = {k: v for k, v in expected.items() if k not in ignored}
+    for value in (a, b):
+        family = value.get("secondary_family")
+        if not isinstance(family, list) or len(family) != 6:
+            raise RuntimeError("secondary_family: expected exactly six endpoints")
+        names = [row.get("endpoint") for row in family]
+        if any(not isinstance(n, str) for n in names) or len(set(names)) != 6:
+            raise RuntimeError("secondary_family: missing or duplicate endpoint")
+        value["secondary_family"] = {row["endpoint"]: row for row in family}
+    compare_scientific_value(a, b, "result")
+    pass_msg("all primary, randomization, sensitivity and six secondary fields")
+
+
+def compare_generated_statistics(out, expected):
+    actual = json.loads((out / "PRIMARY_EXTERNAL_RESULT.json").read_text())
+    compare_result(actual, expected)
+    for name, key in {
+        "PRIMARY_PATIENT_DELTAS.csv": "patient_delta_sha256",
+        "SECONDARY_FAMILY_RESULTS.csv": "secondary_results_sha256",
+    }.items():
+        file = require(out / name)
+        if sha256(file) != actual[key]:
+            raise RuntimeError(f"{name}: generated file/result hash mismatch")
+        a = pd.read_csv(file)
+        b = pd.read_csv(REPO / "expected_outputs" / name)
+        if list(a.columns) != list(b.columns) or len(a) != len(b):
+            raise RuntimeError(f"{name}: generated CSV schema/length differs")
+        identity = b.columns[0]
+        if a[identity].duplicated().any() or b[identity].duplicated().any():
+            raise RuntimeError(f"{name}: duplicate row identity")
+        a = a.sort_values(identity).to_dict("records")
+        b = b.sort_values(identity).to_dict("records")
+        compare_scientific_value(a, b, name)
+        pass_msg(f"{name}: generated hash and all scientific CSV fields")
+
+
+def verify_inference_hashes(out):
+    historical = json.loads(
+        (REPO / "frozen_protocol/external/FROZEN_INFERENCE_MANIFEST.json").read_text()
+    )
+    historical_keys = {
+        "FROZEN_REPEAT_METRICS.csv.gz": "repeat_metrics_sha256",
+        "FROZEN_PATIENT_METRIC_SUMMARY.csv": "patient_summary_sha256",
+    }
+    for name, expected in EXPECTED_INFERENCE_HASHES.items():
+        if historical[historical_keys[name]] != expected:
+            raise RuntimeError(f"{name}: historical manifest hash differs")
+        if sha256(require(out / name)) != expected:
+            raise RuntimeError(f"{name}: regenerated historical SHA256 mismatch")
+        pass_msg(f"{name}: exact historical SHA256")
 
 
 def audit():
@@ -283,61 +385,13 @@ def run_statistics():
             ).read_text()
         )
 
-        a = result["primary"]
-        b = expected["primary"]
-
-        for key in [
-            "n_patients",
-            "wins",
-            "ties",
-            "losses",
-        ]:
-            if a[key] != b[key]:
-                raise RuntimeError(
-                    f"{key} mismatch: "
-                    f"{a[key]} vs {b[key]}"
-                )
-
-        for key in [
-            "mean_delta",
-            "median_delta",
-        ]:
-            if not np.isclose(
-                a[key],
-                b[key],
-                rtol=0,
-                atol=1e-14,
-            ):
-                raise RuntimeError(
-                    f"{key} mismatch."
-                )
-
-        if not np.allclose(
-            a["bootstrap_95ci_mean"],
-            b["bootstrap_95ci_mean"],
-            rtol=0,
-            atol=1e-14,
-        ):
-            raise RuntimeError(
-                "Bootstrap CI mismatch."
-            )
-
+        compare_generated_statistics(out, expected)
         pass_msg("statistics reproduced")
-        pass_msg(
-            f"N = {a['n_patients']}"
-        )
-        pass_msg(
-            "mean delta Spearman = "
-            f"{a['mean_delta']:.12f}"
-        )
-        pass_msg(
-            "95% CI = "
-            f"{a['bootstrap_95ci_mean']}"
-        )
-        pass_msg(
-            "wins/ties/losses = "
-            f"{a['wins']}/{a['ties']}/{a['losses']}"
-        )
+        a = result["primary"]
+        pass_msg(f"N = {a['n_patients']}")
+        pass_msg(f"mean delta Spearman = {a['mean_delta']:.12f}")
+        pass_msg(f"95% CI = {a['bootstrap_95ci_mean']}")
+        pass_msg(f"wins/ties/losses = {a['wins']}/{a['ties']}/{a['losses']}")
 
         print()
         print("STATISTICAL REPRODUCTION COMPLETE")
@@ -370,6 +424,9 @@ def run_external():
             [sys.executable, str(inference_script)],
             check=True,
         )
+
+        # Verify deterministic inference artifacts BEFORE running statistics.
+        verify_inference_hashes(out)
 
         # Add the pre-inference statistics freeze to
         # the newly created inference output directory.
@@ -413,26 +470,9 @@ def run_external():
             ).read_text()
         )
 
-        a = result["primary"]
-        b = expected["primary"]
-
-        if a["n_patients"] != 74:
-            raise RuntimeError(
-                "External reproduction n != 74."
-            )
-
-        if not np.isclose(
-            a["mean_delta"],
-            b["mean_delta"],
-            rtol=0,
-            atol=1e-12,
-        ):
-            raise RuntimeError(
-                "External primary delta mismatch."
-            )
-
+        compare_generated_statistics(out, expected)
         pass_msg("frozen external inference reproduced")
-        pass_msg("primary statistics reproduced")
+        pass_msg("primary and secondary statistics reproduced")
 
         print()
         print("EXTERNAL REPRODUCTION COMPLETE")

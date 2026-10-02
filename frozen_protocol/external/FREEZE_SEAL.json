@@ -1,0 +1,10 @@
+{
+  "freeze_version": "ds004080-external-lockbox-v1.0",
+  "manifest_sha256": "8170555317e6a2b510cb7ef1bbb603ba6a4220ec92a0b50cc32c29392f66cf6d",
+  "development_protocol_sha256": "cb3bd89d6072245ecec7ae608d692f286172fedab517b1b81d821e4e3e710727",
+  "roi_bridge_manifest_sha256": "fb9e3a493bf05e744c65fae165fc1fe3d7734b1a6456685c4d470be9c9efbbca",
+  "dataset_metadata_git_commit": "c4fd7418883e33b024292468eb14da1649f51aae",
+  "pcnd_code_git_commit": "39cf574be55480203e2b8d4a8959071ad0c0e673",
+  "n_external_subjects": 74,
+  "raw_signals_opened_at_freeze": false
+}

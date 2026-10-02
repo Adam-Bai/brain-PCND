@@ -1,0 +1,22 @@
+{
+  "inference_id": "DS004080-frozen-V3f-inference-v1.0",
+  "created_at_utc": "2026-09-27T05:39:25.249588+00:00",
+  "device": "cuda",
+  "checkpoint_sha256": "399421567b0185383bf8953cdcd6c75891893b5113fca8a3a41ac190eb68a794",
+  "frozen_v3f_source_sha256": "34750f1cee3a56b24d5049866396ff9dbbf6df8310f2b2e7f3a81f3cfbb7137c",
+  "external_feature_table_sha256": "18c8e9d1333941f3f8b51a30829cd74cf4aa4acb4108aaac5e2d34ab8707b48b",
+  "context_plan": "/home/dell/jiaxing/bby/pcnd/results/external_lockbox/ds004080_final_lockbox_v1/frozen_context_query_plan.csv",
+  "evaluated_context_k": [
+    3,
+    5,
+    10
+  ],
+  "relation_permutation_seed_root": 20260926,
+  "relation_permutation_seed_rule": "seed_root + subject_ordinal*100000000 + repeat*1000000 + context_k*10000 + query_index",
+  "n_repeat_metric_rows": 44400,
+  "n_patient_summary_rows": 2220,
+  "repeat_metrics_sha256": "3aa6e417972a1b18a511e9d1af70dddd70b4fd72c7db3bed0aadb436b73f49c8",
+  "patient_summary_sha256": "0a4b5940653a82c75db9fabc2b256095be58eca891203ecd9f46d0e9d08f5192",
+  "architecture_or_checkpoint_modified": false,
+  "primary_endpoint_modified": false
+}

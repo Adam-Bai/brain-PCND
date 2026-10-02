@@ -1,0 +1,527 @@
+{
+  "protocol": {
+    "version": "V3f-final-strict-lockbox-v1.0",
+    "freeze_time_utc": "2026-09-26T01:37:22.898677+00:00",
+    "target_journal": "Brain Stimulation",
+    "study_stage": "Architecture frozen after HAPwave development; independent external lockbox not yet opened.",
+    "development_cohort_status": "HAPwave is DEVELOPMENT ONLY. It has been repeatedly inspected during adaptive architecture development and must not be described as an untouched confirmatory cohort."
+  },
+  "scientific_question": {
+    "primary": "Can sparse intracranial stimulation responses reconstruct patient-specific perturbational brain maps beyond a transferable anatomical prior?",
+    "mechanistic_subquestion": "After accounting for patient-wide amplitude calibration and persistent recording-node susceptibility, does stimulation-specific response correspondence retain predictive information?",
+    "clinical_positioning": "The model reconstructs perturbational response maps from sparse intracranial stimulation. It is not currently claimed to select therapeutic targets or improve clinical outcome."
+  },
+  "development_cohort": {
+    "name": "HAPwave",
+    "openneuro_dataset": "ds004696",
+    "n_subjects": 8,
+    "subjects": [
+      {
+        "subject": "sub-01",
+        "n_pairs": 8926,
+        "n_stimulation_sites": 57,
+        "n_recording_channels": 162,
+        "feature_table_sha256": "c2274f1f258b12a0584097c7315a1347b6f7bef6c91dfeb95a2d09a71b73fd73"
+      },
+      {
+        "subject": "sub-02",
+        "n_pairs": 11961,
+        "n_stimulation_sites": 62,
+        "n_recording_channels": 198,
+        "feature_table_sha256": "a3836affa27685add219b46754b9d8a3f24597cce77e001a97d0dc993174738e"
+      },
+      {
+        "subject": "sub-03",
+        "n_pairs": 8937,
+        "n_stimulation_sites": 51,
+        "n_recording_channels": 181,
+        "feature_table_sha256": "1957f5d2bc37ff09d21c08a2e2b537da15230a7f4eb585b040c87a0fa72cf3a2"
+      },
+      {
+        "subject": "sub-04",
+        "n_pairs": 5574,
+        "n_stimulation_sites": 40,
+        "n_recording_channels": 145,
+        "feature_table_sha256": "26032e195df7a5631370f4a1d00e497576f6396c062b1cd23cd49d084e609254"
+      },
+      {
+        "subject": "sub-05",
+        "n_pairs": 6805,
+        "n_stimulation_sites": 44,
+        "n_recording_channels": 160,
+        "feature_table_sha256": "542b4460660eef935b3800069f94ab3b05ef651d8fb4df8527064f791caa3665"
+      },
+      {
+        "subject": "sub-06",
+        "n_pairs": 6228,
+        "n_stimulation_sites": 41,
+        "n_recording_channels": 158,
+        "feature_table_sha256": "c5aa192d693b2f797a5f833e51dec1cbb4c1f9828ae19b404d529f5324e5c4f4"
+      },
+      {
+        "subject": "sub-07",
+        "n_pairs": 3435,
+        "n_stimulation_sites": 19,
+        "n_recording_channels": 186,
+        "feature_table_sha256": "112d22a5cb2c8dffdc3aa1fec8203f82d9c58fbe2ac00d4664b8f3f320ac83df"
+      },
+      {
+        "subject": "sub-08",
+        "n_pairs": 6236,
+        "n_stimulation_sites": 33,
+        "n_recording_channels": 194,
+        "feature_table_sha256": "0ab6ce8b3d3cecd26c34bdf69c281dc7a38d83a0702476663445fd8b9d1751e7"
+      }
+    ],
+    "role": "development cohort",
+    "adaptive_reuse_disclosure": true
+  },
+  "response_definition": {
+    "primary_features": [
+      "early_rms_z",
+      "late_rms_z"
+    ],
+    "early_window_ms": [
+      10,
+      100
+    ],
+    "late_window_ms": [
+      100,
+      500
+    ],
+    "transform": "log1p response followed by normalization fit on internal-training sites only",
+    "interpretation_boundary": "Early and late windows are operational response phenotypes. Latency alone is not interpreted as proof of direct versus polysynaptic transmission."
+  },
+  "eligibility_and_preprocessing": {
+    "recording_channel_type": "SEEG",
+    "recording_channel_status": "good",
+    "primary_near_field_exclusion_mm": 10,
+    "planned_sensitivity_exclusion_mm": [
+      5,
+      15,
+      20
+    ],
+    "exact_stimulation_contacts_excluded": true,
+    "normalization_rule": "Within every training fold, stimulation-site train/validation split is performed FIRST. All feature and target normalization statistics are fit on INTERNAL-TRAIN stimulation sites only.",
+    "roi_vocabulary_rule": "ROI vocabulary is fit on internal-training sites only; unseen labels map to UNK.",
+    "forbidden_model_inputs": [
+      "seizure_zone",
+      "held-out query responses",
+      "independent lockbox outcomes"
+    ]
+  },
+  "model": {
+    "name": "V3f-final strict hierarchical perturbation model",
+    "architecture_status": "FROZEN",
+    "response_space_equation": "z_{s,u,i} = z_pop_{u,i} + c_s + a_{s,i} + t_{s,u,i}",
+    "components": {
+      "population": "Transferable MNI/anatomical prior.",
+      "patient_calibration": "Patient-wide robust response offset c_s estimated from observed context stimulations.",
+      "recording_node_susceptibility": "Persistent patient-specific recording-node effect a_{s,i} estimated from observed context.",
+      "relational_memory": "Neural residual t_{s,u,i} after population, patient calibration, and node susceptibility have been removed."
+    },
+    "relation_identifiability": "Relational component is not interpreted at k=1. Relation training/evaluation begins at k>=3.",
+    "context_budgets": [
+      1,
+      3,
+      5,
+      10
+    ],
+    "relation_context_budgets": [
+      3,
+      5,
+      10
+    ],
+    "test_context_repeats": 20,
+    "population_hidden": 256,
+    "attention_heads": 8,
+    "relation_layers": 3,
+    "roi_embedding_dim": 48,
+    "dropout": 0.1,
+    "population_lr": 0.0002,
+    "relation_lr": 0.0002,
+    "population_steps": 4000,
+    "relation_steps": 5000,
+    "loss_weights": {
+      "prediction": 0.25,
+      "correlation": 0.25,
+      "ranking": 0.1,
+      "negative_control": 0.25,
+      "negative_margin": 0.01
+    },
+    "random_seed": 20260925
+  },
+  "negative_control": {
+    "name": "within-recording-channel stimulation permutation",
+    "preserves": [
+      "patient identity",
+      "recording-channel identity",
+      "patient-wide calibration",
+      "persistent recording-node susceptibility",
+      "response marginal distribution within the recording channel"
+    ],
+    "destroys": "Correspondence between stimulation identity and the residual response at the same recording node.",
+    "primary_interpretation": "relation > relation_perm supports predictive information in stimulation-response correspondence beyond global and node effects.",
+    "causal_boundary": "This contrast does not by itself establish direct anatomical connectivity or a specific synaptic pathway."
+  },
+  "evaluation": {
+    "independent_statistical_unit": "patient",
+    "repeat_handling": "Metrics are calculated within each random-context repeat, then repeats are averaged within patient before inferential statistics.",
+    "pair_level_inference_prohibited": true,
+    "metrics": {
+      "map_fidelity_primary": "Spearman correlation",
+      "map_fidelity_secondary": "Pearson correlation",
+      "amplitude_error": "MAE",
+      "strong_response_retrieval_exploratory": "Top-10% recall"
+    },
+    "conditions": [
+      "population",
+      "global",
+      "node",
+      "relation",
+      "relation_perm"
+    ],
+    "nested_models": {
+      "M0": "population",
+      "M1": "population + patient calibration",
+      "M2": "population + patient calibration + recording-node susceptibility",
+      "M3": "M2 + relational memory",
+      "M3_perm": "M3 with within-channel stimulation correspondence destroyed"
+    }
+  },
+  "independent_lockbox_plan": {
+    "status": "PRE-SPECIFIED BEFORE LOCKBOX OPENING",
+    "training_data": "All model weights, preprocessing parameters, and hyperparameters must be learned using development data only. Independent-lockbox query outcomes must never be used for training, normalization, checkpoint selection, hyperparameter tuning, or architecture changes.",
+    "patient_personalization_allowed": "Only the designated sparse context stimulation responses for that lockbox patient may be used to estimate c_s, a_{s,i}, and relational memory. Query stimulation responses remain hidden until evaluation.",
+    "primary_endpoint": {
+      "target": "late response",
+      "context_k": 10,
+      "contrast": "relation minus relation_perm",
+      "metric": "patient-level Spearman map correlation",
+      "estimand": "Mean paired patient-level difference after averaging the 20 pre-specified random-context repeats within each patient.",
+      "hypothesis_direction": "relation > relation_perm",
+      "primary_test": "two-sided patient-level paired exact sign-flip/randomization test",
+      "alpha": 0.05,
+      "confidence_interval": "95% patient-level nonparametric bootstrap CI for the mean paired difference",
+      "claim_support_rule": "Primary claim is supported only if the observed mean difference is positive and the pre-specified two-sided primary test has p < 0.05. Effect size and CI are reported regardless of significance."
+    },
+    "key_secondary_family": [
+      {
+        "target": "late",
+        "context_k": 10,
+        "contrast": "relation vs node",
+        "metric": "Spearman"
+      },
+      {
+        "target": "late",
+        "context_k": 10,
+        "contrast": "relation vs relation_perm",
+        "metric": "Pearson"
+      },
+      {
+        "target": "late",
+        "context_k": 10,
+        "contrast": "relation vs relation_perm",
+        "metric": "MAE"
+      },
+      {
+        "target": "late",
+        "context_k": 5,
+        "contrast": "relation vs relation_perm",
+        "metric": "Spearman"
+      },
+      {
+        "target": "late",
+        "context_k": 3,
+        "contrast": "relation vs relation_perm",
+        "metric": "Spearman"
+      },
+      {
+        "target": "early",
+        "context_k": 10,
+        "contrast": "relation vs relation_perm",
+        "metric": "Spearman"
+      }
+    ],
+    "secondary_multiple_testing": "Holm family-wise correction at alpha=0.05 across the six key secondary tests.",
+    "exploratory_endpoints": [
+      "Top-10% recall",
+      "NDCG/precision/recall analyses if specified before lockbox outcome inspection",
+      "early-response context trajectories",
+      "other context-budget interactions"
+    ],
+    "minimum_reporting": [
+      "mean paired difference",
+      "median paired difference",
+      "95% patient bootstrap CI",
+      "wins/ties/losses",
+      "exact sign-flip p",
+      "Wilcoxon sensitivity analysis",
+      "effect size"
+    ]
+  },
+  "external_lockbox_eligibility": {
+    "primary_k10_requirement": "A patient must have sufficient usable stimulation sites to allocate 10 context sites and retain an evaluable held-out query map.",
+    "recording_requirement": "Eligible good intracranial recording channels must support map-level correlation metrics.",
+    "missingness_rule": "Eligibility is determined without inspecting query-response outcomes. Patients may not be excluded because their final model performance is poor.",
+    "dataset_name": "TBD before lockbox opening",
+    "lockbox_open_date": null
+  },
+  "robustness_plan": {
+    "near_field_exclusion_mm": [
+      5,
+      10,
+      15,
+      20
+    ],
+    "training_seed_sensitivity": "At least three fixed training seeds; robustness analyses do not replace the pre-specified primary model.",
+    "preprocessing_sensitivity": "Reference/artifact/filtering sensitivity will be reported when raw CCEP preprocessing is finalized.",
+    "reporting_rule": "All planned sensitivity analyses are reported, including unfavorable results."
+  },
+  "claim_boundary": {
+    "supported_if_external_replication_succeeds": "Sparse patient perturbations contain predictive stimulation-response correspondence beyond a shared anatomical prior, patient-wide calibration, and persistent recording-node susceptibility.",
+    "not_claimed": [
+      "direct structural connectivity from latency alone",
+      "direct versus polysynaptic mechanism from early/late timing alone",
+      "epileptogenic-zone ground truth",
+      "therapeutic target selection",
+      "improved surgical outcome",
+      "causal clinical benefit"
+    ]
+  },
+  "post_lockbox_rules": {
+    "prohibited_after_lockbox_opening": [
+      "architecture changes",
+      "new feature engineering based on lockbox results",
+      "changing early/late response windows",
+      "changing the primary context budget",
+      "changing the primary metric",
+      "changing the primary contrast",
+      "tuning loss weights",
+      "tuning exclusion thresholds based on performance",
+      "changing normalization rules",
+      "selecting a preferred seed based on lockbox outcome"
+    ],
+    "bug_fix_rule": "A genuine implementation bug may be corrected only with a documented protocol amendment. If the fix was motivated by observed lockbox performance, that cohort loses confirmatory lockbox status and a new independent lockbox is required.",
+    "architecture_freeze": true
+  },
+  "reproducibility": {
+    "python": "3.10.21 (main, Aug 27 2026, 14:42:07) [GCC 14.3.0]",
+    "platform": "Linux-7.0.0-28-generic-x86_64-with-glibc2.39",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "scipy": "1.15.2",
+    "torch": "2.10.0+cu130",
+    "cuda_available": true,
+    "git_commit": null,
+    "git_branch": null,
+    "git_worktree_dirty": false,
+    "git_status_porcelain": null,
+    "frozen_files": [
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/scripts/15_build_pcnd_v3_feature_tables.py",
+        "exists": true,
+        "sha256": "ade7d22a910c2ce33f309aacd57370c042da6ecd5496bd21b8641c2e5f3a58c4",
+        "size_bytes": 15920
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/scripts/30_train_pcnd_v3f_final_strict.py",
+        "exists": true,
+        "sha256": "34750f1cee3a56b24d5049866396ff9dbbf6df8310f2b2e7f3a81f3cfbb7137c",
+        "size_bytes": 55182
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/scripts/31_aggregate_v3f_final.py",
+        "exists": true,
+        "sha256": "64f9faa9db0f313458199b4291bf348fe2d2e8542bbfe7f051c7300583afa0bb",
+        "size_bytes": 4827
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/scripts/32_v3f_final_statistical_audit.py",
+        "exists": true,
+        "sha256": "143870b4f08b10d8cdb613ba5c70ff6f4f6226ed1d102892c8f379c005e0ea33",
+        "size_bytes": 31565
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-01/pcnd_v3f_final_strict.pt",
+        "exists": true,
+        "sha256": "aa0f386d03379d5f6cd129121532cebdfa5e4a5e472083d1d89f5d8b4cd20068",
+        "size_bytes": 19607500
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-01/fold_summary.csv",
+        "exists": true,
+        "sha256": "61d401327c6738a7d1bd04ea817c885839459573f331aa2c515d0fc10a1fedf4",
+        "size_bytes": 4458
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-01/test_metrics_raw.csv",
+        "exists": true,
+        "sha256": "ace70ce858bd5507b92da941fd134a59c55989722f4d09bc136c6bff3834219a",
+        "size_bytes": 83193
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-02/pcnd_v3f_final_strict.pt",
+        "exists": true,
+        "sha256": "7c229f2776e8e0ca9f6947085318f95a41b624eeb3c638330ea952e4eac9838c",
+        "size_bytes": 19608588
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-02/fold_summary.csv",
+        "exists": true,
+        "sha256": "955149ce1be3c51aa13c93456c31d581cb06694b058869dca04b94f8842bd19f",
+        "size_bytes": 4468
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-02/test_metrics_raw.csv",
+        "exists": true,
+        "sha256": "c08d37cc605161c08aed120bea2fdb2a481883981f3806072cfb3cf101d1f182",
+        "size_bytes": 83322
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-03/pcnd_v3f_final_strict.pt",
+        "exists": true,
+        "sha256": "33243722269c2de4447d499b7b8d7c1838276ccc599cafbde60494bbce020c22",
+        "size_bytes": 19609420
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-03/fold_summary.csv",
+        "exists": true,
+        "sha256": "ae366ea2d365e30f30deda43d0a25210b9505f06340ee62d4292b824ca35fa71",
+        "size_bytes": 4459
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-03/test_metrics_raw.csv",
+        "exists": true,
+        "sha256": "f6dabb1848a5828f74186c5ec1f1a365aef060f3d1cd2e41f0aca93a3bcd4410",
+        "size_bytes": 83063
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-04/pcnd_v3f_final_strict.pt",
+        "exists": true,
+        "sha256": "bce1125d26e6090e272d6647bd3d6cfa241ac5fd00f1c3c735b295a57850c452",
+        "size_bytes": 19608460
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-04/fold_summary.csv",
+        "exists": true,
+        "sha256": "80c43e3d2ab6b4e98fbd11f259e355e203009f7bbea3bcaf055cb6cf4b65d6fa",
+        "size_bytes": 4535
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-04/test_metrics_raw.csv",
+        "exists": true,
+        "sha256": "3889b909236ae09dbe54db4c4805fe894572879e99c4cd824827249ea8cc5014",
+        "size_bytes": 84523
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-05/pcnd_v3f_final_strict.pt",
+        "exists": true,
+        "sha256": "cfce2c5fd6daa748c091d54a6aa78ca72ee38a7e10889c2d7ab9d3b3341f237a",
+        "size_bytes": 19608844
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-05/fold_summary.csv",
+        "exists": true,
+        "sha256": "4fc553ee91ef9d53469931e524ff11555d3d3b9b7e0fd4049046751ef3c32cbe",
+        "size_bytes": 4472
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-05/test_metrics_raw.csv",
+        "exists": true,
+        "sha256": "78465973e07fe292fc2568d8de12745022697a32b8ff6254ac02381b5354c9aa",
+        "size_bytes": 83284
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-06/pcnd_v3f_final_strict.pt",
+        "exists": true,
+        "sha256": "b0dde1bad8742ae2b9777693eaaa0d11a634fe55f841308cf7a3695db20a1acd",
+        "size_bytes": 19606924
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-06/fold_summary.csv",
+        "exists": true,
+        "sha256": "2fef93699361decd2d9f7a1087821b8d69c131272039aea9a3a92c7847873205",
+        "size_bytes": 4465
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-06/test_metrics_raw.csv",
+        "exists": true,
+        "sha256": "f6c403c25195eeac61a47cb014c2e3e34b89c532763790c962193d21aa51dba6",
+        "size_bytes": 83375
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-07/pcnd_v3f_final_strict.pt",
+        "exists": true,
+        "sha256": "c4fdefdaac4a403a70f0bfb611c0cbe1462715e158c27030b987971117a02899",
+        "size_bytes": 19608652
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-07/fold_summary.csv",
+        "exists": true,
+        "sha256": "5b23471a6bd222ed9e32b16a81b49d172b397b8df69e9963a6746b0c4cb7b9f6",
+        "size_bytes": 4478
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-07/test_metrics_raw.csv",
+        "exists": true,
+        "sha256": "9370a3d43172600f97ddd3fca47d109250e6c644c4f3e7d7174fa2b9919de490",
+        "size_bytes": 83668
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-08/pcnd_v3f_final_strict.pt",
+        "exists": true,
+        "sha256": "104a0cfd3c6cc26296d67201748a3a0b9fbfe971238f1fe0134030cf70ee6592",
+        "size_bytes": 19607436
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-08/fold_summary.csv",
+        "exists": true,
+        "sha256": "f4e8d15fb950ceaad4fbd9641767ef57e76e49ff724b72301de67f6f0fb80de1",
+        "size_bytes": 4452
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/sub-08/test_metrics_raw.csv",
+        "exists": true,
+        "sha256": "6b82491a978d7cd10ef03f1539dee5e7fbc05530da05eaf5383c9b92e2f25825",
+        "size_bytes": 83193
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/final_statistical_audit/patient_condition_summary.csv",
+        "exists": true,
+        "sha256": "5125a98f5686ac7e2b09e252d19430bac54277f8f2bfef0fd95bd0784e4b5666",
+        "size_bytes": 35200
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/final_statistical_audit/patient_level_paired_deltas.csv",
+        "exists": true,
+        "sha256": "27bf315a6946c94a2e9c8e86ea3920e4ead744fdeb1553f38666f72f3c811330",
+        "size_bytes": 105861
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/final_statistical_audit/paired_contrast_statistical_summary.csv",
+        "exists": true,
+        "sha256": "61ffa10d972bddc79a5c266a9ae42de31f29dbac9aec1aed8208bf20a32c147a",
+        "size_bytes": 33707
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/final_statistical_audit/correspondence_trajectory.csv",
+        "exists": true,
+        "sha256": "6b6a2cd4b7a24d2f0c467f196e14376a56f470be6b6080066c2b761c693f53b5",
+        "size_bytes": 2529
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/final_statistical_audit/future_lockbox_primary_endpoint_development_snapshot.csv",
+        "exists": true,
+        "sha256": "412607734c971316a411570094a010796b94e264e036d7b9a38cd791287f98cb",
+        "size_bytes": 753
+      },
+      {
+        "path": "/home/dell/jiaxing/bby/pcnd/results/clinical_v9/v3f_final_strict/final_statistical_audit/STATISTICAL_AUDIT.md",
+        "exists": true,
+        "sha256": "4f0c2e18facdeff30470c81e81b61e517c40f7f1e5a7d80f6deb1d8e516e3c92",
+        "size_bytes": 1885
+      }
+    ]
+  }
+}

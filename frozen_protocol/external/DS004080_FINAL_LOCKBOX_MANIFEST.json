@@ -1,0 +1,103 @@
+{
+  "freeze_version": "ds004080-external-lockbox-v1.0",
+  "freeze_time_utc": "2026-09-26T02:21:30.917299+00:00",
+  "target_journal": "Brain Stimulation",
+  "external_dataset": "OpenNeuro ds004080 / RESPect",
+  "dataset_metadata_git_commit": "c4fd7418883e33b024292468eb14da1649f51aae",
+  "pcnd_code_git_commit": "39cf574be55480203e2b8d4a8959071ad0c0e673",
+  "development_protocol": {
+    "cohort": "HAPwave / ds004696",
+    "status": "development closed",
+    "manifest_sha256": "cb3bd89d6072245ecec7ae608d692f286172fedab517b1b81d821e4e3e710727"
+  },
+  "external_cohort": {
+    "n_subjects": 74,
+    "selection_rule": "All subjects satisfying the pre-outcome metadata, stimulation-site, recording-channel, coordinate, and dominant-protocol eligibility rules.",
+    "performance_based_exclusion": false,
+    "roi_coverage_based_exclusion": false
+  },
+  "stimulation_site_rule": {
+    "dominant_protocol_per_subject": true,
+    "minimum_repeats_per_site": 5,
+    "minimum_usable_sites": 11,
+    "primary_near_field_exclusion_mm": 10.0,
+    "exact_stimulation_contacts_excluded": true,
+    "minimum_recording_channels_per_site": 20
+  },
+  "anatomical_interface": {
+    "source_space": "fsaverage / MNI305-like",
+    "source_units": "mm",
+    "fixed_affine": "FieldTrip fsaverage/MNI305 to MNI152/SPM affine",
+    "important_limitation": "This is an a-priori approximate template bridge and is not claimed to be an exact nonlinear transform to MNI152NLin6Sym.",
+    "roi_bridge_manifest_sha256": "fb9e3a493bf05e744c65fae165fc1fe3d7734b1a6456685c4d470be9c9efbbca",
+    "unmatched_roi_rule": "UNK",
+    "fuzzy_mapping": false,
+    "contralateral_fallback": false,
+    "outcome_dependent_mapping": false
+  },
+  "operational_roi_domain_shift": {
+    "recording_channel_known_fraction": 0.7465,
+    "stimulation_contact_known_fraction": 0.7462,
+    "operational_union_known_fraction": 0.7448,
+    "all_three_pair_roi_known_fraction": 0.5128,
+    "patient_all_three_fraction_min": 0.0898,
+    "patient_all_three_fraction_median": 0.549,
+    "patient_all_three_fraction_max": 0.8793,
+    "interpretation": "ROI coverage is a frozen descriptor of external anatomical domain shift and is not an exclusion criterion."
+  },
+  "context_plan": {
+    "context_k": [
+      1,
+      3,
+      5,
+      10
+    ],
+    "n_repeats_per_k": 20,
+    "actual_context_lists_frozen": true,
+    "actual_query_lists_frozen": true,
+    "selection_based_on_response": false
+  },
+  "primary_endpoint": {
+    "response": "late",
+    "context_k": 10,
+    "metric": "patient-level Spearman map correlation",
+    "contrast": "relation minus within-recording-channel stimulation permutation",
+    "inference_unit": "patient",
+    "repeat_aggregation": "20 context repeats averaged within patient before inference",
+    "test": "two-sided exact patient-level sign-flip/randomization test",
+    "alpha": 0.05,
+    "confidence_interval": "95% nonparametric patient bootstrap CI for mean paired difference"
+  },
+  "lockbox_blindness_at_freeze": {
+    "raw_signals_opened": false,
+    "response_features_computed": false,
+    "response_derivatives_read": false,
+    "clinical_outcome_labels_used": false,
+    "external_model_performance_observed": false
+  },
+  "post_opening_prohibitions": [
+    "no patient exclusion based on model performance",
+    "no patient exclusion based on ROI coverage",
+    "no architecture changes",
+    "no ROI remapping",
+    "no anatomical-adapter tuning",
+    "no context reselection",
+    "no primary-endpoint changes",
+    "no metric changes",
+    "no loss-weight changes",
+    "no preferred-seed selection"
+  ],
+  "frozen_artifacts": {
+    "lockbox_cohort.csv": "c336d547891dbbb9a57dfd1c299da92ed2a41f5212972781fca1cfc6d1dba90d",
+    "subject_strict_eligibility.csv": "bee68a97db6a3fe2916b0a66ddab669fbd9d8c85558b081362132908690922d4",
+    "strict_usable_stimulation_sites.csv": "014844ffe21ef0ada4ef7ad04c2dc5b81247f87a5999cac376e0cb12dc977072",
+    "recording_channel_inventory.csv": "e21b25c6fec9faf871a339e6e7593d68fa155810186b42c095df21d6a69a7f19",
+    "frozen_context_query_plan.csv": "be3501b07210b692d3d6474ec520fdaec51da9b7bc85279d363cf222fd0413a9",
+    "ANATOMICAL_ADAPTER.json": "b128602e2bf6f474167131678e2058aa2b389c5269daebeb343ba783f9ee70ea",
+    "ROI_BRIDGE_MANIFEST.json": "fb9e3a493bf05e744c65fae165fc1fe3d7734b1a6456685c4d470be9c9efbbca",
+    "electrode_roi_bridge.csv": "5e69fe882c0c47935cb28ea988829ea8f3b574b13034f6085bd7eb005af436b0",
+    "roi_crosswalk.csv": "317574c8ad23b056f2fdd62d84ba47c85f4505ee1d19f163be2a9c7051dbbd1b",
+    "OPERATIONAL_ROI_COVERAGE_SUMMARY.json": "5202d8239289caf4d191c756272eba8b19a62241ba4963fce1460342d25ff990",
+    "ROI_BRIDGE_COVERAGE_CLARIFICATION.json": "a70dc40561dc644a8b58037b186c3b1c3cf3a764f5ca58ebcb0cd2851a69b1d8"
+  }
+}

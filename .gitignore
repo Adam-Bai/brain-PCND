@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Raw neurophysiology
+*.eeg
+*.fif
+
+# Large/raw datasets
+data/
+data_external_lockbox/
+raw/
+cache/
+tensor_cache*/
+outputs/
+
+# Runtime artifacts
+*.log
+*.tmp
+*.aria2
+
+# Intermediate numerical data
+*.npy
+*.npz
+*.parquet
+*.pkl
+
+# Model checkpoints are ignored by default,
+# except the frozen deployment checkpoint.
+*.pt
+!checkpoints/pcnd_v3f_all8_deployment.pt

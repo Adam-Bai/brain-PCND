@@ -1,0 +1,82 @@
+{
+  "deployment_version": "PCND-V3f-all8-deployment-v1.0",
+  "freeze_time_utc": "2026-09-26T03:18:16.092568+00:00",
+  "purpose": "Single frozen all-8 HAPwave development deployment model for one-shot evaluation on the previously sealed ds004080 external lockbox.",
+  "development_subjects": [
+    "sub-01",
+    "sub-02",
+    "sub-03",
+    "sub-04",
+    "sub-05",
+    "sub-06",
+    "sub-07",
+    "sub-08"
+  ],
+  "external_data_used_for_training": false,
+  "external_signals_opened": false,
+  "external_response_features_used": false,
+  "external_model_performance_observed": false,
+  "architecture_source": {
+    "path": "/home/dell/jiaxing/bby/pcnd/scripts/30_train_pcnd_v3f_final_strict.py",
+    "sha256": "34750f1cee3a56b24d5049866396ff9dbbf6df8310f2b2e7f3a81f3cfbb7137c",
+    "reuse_method": "AST extraction of the exact frozen V3f architecture/loss definitions from script30.",
+    "state_schema_regression": "PASS"
+  },
+  "training": {
+    "seed": 20260927,
+    "normalization": "Fit only on internal-training stimulation sites from all 8 HAPwave development patients.",
+    "checkpoint_selection": "Internal HAPwave validation stimulation sites only.",
+    "best_population_step": 1000,
+    "best_population_val": 0.2251371024703642,
+    "best_relation_step": 5000,
+    "best_relation_val": 0.4556209998990192,
+    "hyperparameters": {
+      "hidden": 256,
+      "heads": 8,
+      "layers": 3,
+      "roi_dim": 48,
+      "ff_mult": 4,
+      "dropout": 0.1,
+      "population_steps": 4000,
+      "relation_steps": 5000,
+      "lr_pop": 0.0002,
+      "lr_rel": 0.0002,
+      "w_pred": 0.25,
+      "w_corr": 0.25,
+      "w_rank": 0.1,
+      "w_neg": 0.25,
+      "negative_margin": 0.01
+    }
+  },
+  "normalization": {
+    "n_internal_training_rows": 49250,
+    "roi_vocab_size": 120,
+    "unseen_external_roi_rule": "UNK"
+  },
+  "frozen_dependencies": {
+    "hapwave_protocol_sha256": "cb3bd89d6072245ecec7ae608d692f286172fedab517b1b81d821e4e3e710727",
+    "ds004080_lockbox_sha256": "8170555317e6a2b510cb7ef1bbb603ba6a4220ec92a0b50cc32c29392f66cf6d",
+    "ds004080_roi_bridge_sha256": "fb9e3a493bf05e744c65fae165fc1fe3d7734b1a6456685c4d470be9c9efbbca"
+  },
+  "code": {
+    "pcnd_git_commit": "3659185c01908385c6f1e6723cfb9f1dea33a960",
+    "tracked_worktree_clean_at_training_start": true
+  },
+  "development_feature_tables": {
+    "/home/dell/jiaxing/bby/pcnd/results/clinical_v5/v3_features/sub-01_pcnd_v3_pairs.csv.gz": "c2274f1f258b12a0584097c7315a1347b6f7bef6c91dfeb95a2d09a71b73fd73",
+    "/home/dell/jiaxing/bby/pcnd/results/clinical_v5/v3_features/sub-02_pcnd_v3_pairs.csv.gz": "a3836affa27685add219b46754b9d8a3f24597cce77e001a97d0dc993174738e",
+    "/home/dell/jiaxing/bby/pcnd/results/clinical_v5/v3_features/sub-03_pcnd_v3_pairs.csv.gz": "1957f5d2bc37ff09d21c08a2e2b537da15230a7f4eb585b040c87a0fa72cf3a2",
+    "/home/dell/jiaxing/bby/pcnd/results/clinical_v5/v3_features/sub-04_pcnd_v3_pairs.csv.gz": "26032e195df7a5631370f4a1d00e497576f6396c062b1cd23cd49d084e609254",
+    "/home/dell/jiaxing/bby/pcnd/results/clinical_v5/v3_features/sub-05_pcnd_v3_pairs.csv.gz": "542b4460660eef935b3800069f94ab3b05ef651d8fb4df8527064f791caa3665",
+    "/home/dell/jiaxing/bby/pcnd/results/clinical_v5/v3_features/sub-06_pcnd_v3_pairs.csv.gz": "c5aa192d693b2f797a5f833e51dec1cbb4c1f9828ae19b404d529f5324e5c4f4",
+    "/home/dell/jiaxing/bby/pcnd/results/clinical_v5/v3_features/sub-07_pcnd_v3_pairs.csv.gz": "112d22a5cb2c8dffdc3aa1fec8203f82d9c58fbe2ac00d4664b8f3f320ac83df",
+    "/home/dell/jiaxing/bby/pcnd/results/clinical_v5/v3_features/sub-08_pcnd_v3_pairs.csv.gz": "0ab6ce8b3d3cecd26c34bdf69c281dc7a38d83a0702476663445fd8b9d1751e7"
+  },
+  "frozen_artifacts": {
+    "checkpoint": "/home/dell/jiaxing/bby/pcnd/results/clinical_v10/v3f_all8_deployment/pcnd_v3f_all8_deployment.pt",
+    "checkpoint_sha256": "399421567b0185383bf8953cdcd6c75891893b5113fca8a3a41ac190eb68a794",
+    "internal_split": "/home/dell/jiaxing/bby/pcnd/results/clinical_v10/v3f_all8_deployment/all8_internal_site_split.json",
+    "internal_split_sha256": "de882e60fb1c5379526d055695ba62500d89e093b4eb52129358ccf84a063742"
+  },
+  "post_freeze_rule": "This checkpoint may not be replaced, retrained, seed-selected, or modified after ds004080 raw signal opening."
+}

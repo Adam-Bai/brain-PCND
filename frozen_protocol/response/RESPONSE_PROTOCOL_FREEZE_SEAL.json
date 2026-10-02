@@ -1,0 +1,13 @@
+{
+  "protocol_id": "DS004080-external-response-v1.0",
+  "response_protocol_sha256": "df944bdf79b50f8609320cad46e15c3df4bcf1d207335b83a6d18d85e883a423",
+  "external_lockbox_sha256": "8170555317e6a2b510cb7ef1bbb603ba6a4220ec92a0b50cc32c29392f66cf6d",
+  "deployment_checkpoint_sha256": "399421567b0185383bf8953cdcd6c75891893b5113fca8a3a41ac190eb68a794",
+  "deployment_manifest_sha256": "dd69bb8963a678a9459987ebc5e3711549b42679ed27b1ed57bbbf0628b593b0",
+  "development_protocol_sha256": "cb3bd89d6072245ecec7ae608d692f286172fedab517b1b81d821e4e3e710727",
+  "roi_bridge_sha256": "fb9e3a493bf05e744c65fae165fc1fe3d7734b1a6456685c4d470be9c9efbbca",
+  "development_response_source_sha256": "82c6e9b6e7261b0595f4adcfd7c672c23fd0e0685aad3ca9f21393091b1ba895",
+  "pcnd_git_commit": "7dac1a7f192ee5623fc654c8a18ea31c59b655fb",
+  "raw_signals_opened_before_freeze": false,
+  "external_performance_observed_before_freeze": false
+}

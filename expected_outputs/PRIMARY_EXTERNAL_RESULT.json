@@ -1,0 +1,113 @@
+{
+  "analysis_id": "DS004080-primary-external-result-v1.0",
+  "created_at_utc": "2026-09-27T07:31:25.073632+00:00",
+  "primary": {
+    "endpoint": "late k10 patient-level mean Spearman relation - relation_perm",
+    "n_patients": 74,
+    "mean_delta": 0.03732822177853643,
+    "median_delta": 0.030232770117554916,
+    "bootstrap_95ci_mean": [
+      0.03132607729350565,
+      0.04359921295990589
+    ],
+    "wins": 71,
+    "ties": 0,
+    "losses": 3,
+    "randomization": {
+      "observed_abs_mean": 0.03732822177853643,
+      "n_randomizations": 10000000,
+      "extreme": 0,
+      "p_mc": 9.9999990000001e-08,
+      "mc_tail_probability_ci95": [
+        0.0,
+        3.6888787737224376e-07
+      ]
+    },
+    "sensitivity": {
+      "n_nonzero": 74,
+      "wins": 71,
+      "exact_binomial_sign_p": 7.157428404298838e-18,
+      "wilcoxon_approx_p": 2.0499718078655237e-13
+    },
+    "support_rule": "positive mean delta and two-sided randomization p < 0.05",
+    "support_rule_met": true
+  },
+  "secondary_family": [
+    {
+      "endpoint": "late_k10_relation_vs_node_spearman",
+      "mean_delta": 0.02992475079682868,
+      "median_delta": 0.026872159100703202,
+      "wins": 64,
+      "ties": 0,
+      "losses": 10,
+      "p_mc": 4.99999750000125e-07,
+      "mc_ci_low": 0.0,
+      "mc_ci_high": 1.8444380260790603e-06,
+      "holm_adjusted_p": 2.9999985000007498e-06
+    },
+    {
+      "endpoint": "late_k10_relation_vs_perm_pearson",
+      "mean_delta": 0.015554489176188003,
+      "median_delta": 0.01191172562521825,
+      "wins": 63,
+      "ties": 0,
+      "losses": 11,
+      "p_mc": 4.99999750000125e-07,
+      "mc_ci_low": 0.0,
+      "mc_ci_high": 1.8444380260790603e-06,
+      "holm_adjusted_p": 2.9999985000007498e-06
+    },
+    {
+      "endpoint": "late_k10_relation_vs_perm_mae_reduction",
+      "mean_delta": 0.0673251994975151,
+      "median_delta": 0.060190427069059804,
+      "wins": 74,
+      "ties": 0,
+      "losses": 0,
+      "p_mc": 4.99999750000125e-07,
+      "mc_ci_low": 0.0,
+      "mc_ci_high": 1.8444380260790603e-06,
+      "holm_adjusted_p": 2.9999985000007498e-06
+    },
+    {
+      "endpoint": "late_k5_relation_vs_perm_spearman",
+      "mean_delta": 0.034438310565677185,
+      "median_delta": 0.030734915112095765,
+      "wins": 70,
+      "ties": 0,
+      "losses": 4,
+      "p_mc": 4.99999750000125e-07,
+      "mc_ci_low": 0.0,
+      "mc_ci_high": 1.8444380260790603e-06,
+      "holm_adjusted_p": 2.9999985000007498e-06
+    },
+    {
+      "endpoint": "late_k3_relation_vs_perm_spearman",
+      "mean_delta": 0.02690286449324535,
+      "median_delta": 0.02587804534807925,
+      "wins": 72,
+      "ties": 0,
+      "losses": 2,
+      "p_mc": 4.99999750000125e-07,
+      "mc_ci_low": 0.0,
+      "mc_ci_high": 1.8444380260790603e-06,
+      "holm_adjusted_p": 2.9999985000007498e-06
+    },
+    {
+      "endpoint": "early_k10_relation_vs_perm_spearman",
+      "mean_delta": 0.031096454754439295,
+      "median_delta": 0.030279051805461796,
+      "wins": 72,
+      "ties": 0,
+      "losses": 2,
+      "p_mc": 4.99999750000125e-07,
+      "mc_ci_low": 0.0,
+      "mc_ci_high": 1.8444380260790603e-06,
+      "holm_adjusted_p": 2.9999985000007498e-06
+    }
+  ],
+  "patient_delta_sha256": "9a1664fa318a2980672df6729340be7114a7561cc1677351be367d070fe4603a",
+  "secondary_results_sha256": "4ea274142ae586bbba94b3abd630acf10a1a7d633d241792fe7f1cfd725b42fb",
+  "patient_summary_sha256": "0a4b5940653a82c75db9fabc2b256095be58eca891203ecd9f46d0e9d08f5192",
+  "statistical_operationalization_sha256": "a2ada7078488d86d07b9acc921a1d03dd486a50aec1c0d87cdde9c05b378e60b"
+}

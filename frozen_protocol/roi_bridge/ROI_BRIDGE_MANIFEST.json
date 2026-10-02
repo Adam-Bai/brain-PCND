@@ -1,0 +1,38 @@
+{
+  "bridge_version": "ds004080-to-hapwave-destrieux-bridge-v1.0",
+  "freeze_time_utc": "2026-09-26T02:06:45.649781+00:00",
+  "development_protocol_sha256": "cb3bd89d6072245ecec7ae608d692f286172fedab517b1b81d821e4e3e710727",
+  "source_outcome_blind_audit": "/home/dell/jiaxing/bby/pcnd/results/external_lockbox/ds004080_roi_bridge_audit_v1/electrode_level_metadata_augmented_mapping.csv",
+  "source_audit_sha256": "a9eda9721a40f82d5fe5ff4b227a7bad3ffe33b4e57ae2f3386086e4a255543a",
+  "candidate_mapping_sha256": "ccb3a9eb012a37cc6546850550d1216015a3356ace9d8f201cc943df231a50cc",
+  "dataset_git_commit": "c4fd7418883e33b024292468eb14da1649f51aae",
+  "pcnd_git_commit": "fe70a11efdbb517bffaf452a9e9856ce74751b71",
+  "rule": "For each ds004080 Destrieux_label_text and metadata hemisphere pair, map to the unique HAPwave ROI token with the same canonical Destrieux stem and hemisphere. If no unique HAPwave token exists, map to UNK.",
+  "prohibited_mapping_rules": [
+    "no fuzzy string matching",
+    "no contralateral fallback",
+    "no semantic nearest-neighbor mapping",
+    "no outcome-dependent remapping",
+    "no patient exclusion based on ROI bridge coverage"
+  ],
+  "overall_electrode_weighted_coverage": 0.47694974003466206,
+  "n_electrode_rows": 8655,
+  "n_matched": 4128,
+  "n_UNK": 4527,
+  "coverage_by_subject": {
+    "min": 0.20300751879699247,
+    "median": 0.46009253903990743,
+    "max": 0.8333333333333334
+  },
+  "blindness": {
+    "signals_read": false,
+    "response_derivatives_read": false,
+    "clinical_outcome_labels_used": false,
+    "model_performance_used": false
+  },
+  "files": {
+    "electrode_roi_bridge.csv": "5e69fe882c0c47935cb28ea988829ea8f3b574b13034f6085bd7eb005af436b0",
+    "roi_crosswalk.csv": "317574c8ad23b056f2fdd62d84ba47c85f4505ee1d19f163be2a9c7051dbbd1b",
+    "subject_roi_bridge_coverage.csv": "9d1efdfbc9412f732fe592bde8f1eed03743c306af806ce164d14017e81a9a0f"
+  }
+}

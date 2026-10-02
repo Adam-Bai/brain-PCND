@@ -1,0 +1,8 @@
+PCND software
+Copyright 2026 PCND contributors.
+
+Apache-2.0 applies to original software and release documentation only.
+The deployment checkpoint, derived tables and upstream datasets are
+separate artifacts. See DATA_AND_WEIGHTS_NOTICE.md for their terms.
+Historical frozen source bytes are preserved without adding headers;
+this notice identifies their repository software licensing scope.

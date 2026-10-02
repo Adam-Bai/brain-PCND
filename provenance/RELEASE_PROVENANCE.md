@@ -27,3 +27,11 @@ and freeze timestamps.
 
 The GitHub public-release commit is a later packaging/reproducibility commit
 and must not be interpreted as evidence of pre-lockbox freezing.
+
+## Complete release manifest
+
+The historical SHA256SUMS.txt remains unchanged. RELEASE_MANIFEST_v1.0.csv
+and RELEASE_SHA256_v1.0.txt cover all tracked/nonignored release files except
+these two self-excluded manifests; .git and ignored runtime files are not part
+of a release. Generate/check them with tools/build_release_manifest.py.
+Freeze timestamps and historical commits are not modified by release packaging.

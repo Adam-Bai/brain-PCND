@@ -3,7 +3,7 @@
 ## Status
 
 Full frozen external inference and patient-level statistical reproduction
-have been rerun successfully from the public-release materials.
+have been rerun successfully by the authors from the public-release materials.
 
 This verification is distinct from the historical lockbox freeze.
 The historical manifests and timestamps remain unchanged.
@@ -109,3 +109,27 @@ Scientific fields are compared semantically instead.
 
 The repeat-level and patient-level inference artifacts are deterministic
 and were reproduced with exact historical SHA256 hashes.
+
+## Release validation additions
+
+The release wrapper now compares all scientific result fields, including the
+primary randomization and sensitivity fields and all six secondary endpoints.
+External mode requires both historical inference artifact hashes before
+statistics. These additions validate reproduction and do not change the frozen
+scientific calculation. See RELEASE_NOTES_v1.0.0.md.
+
+## Release-hardening check, 2026-10-03
+
+The hardened `--mode statistics` was run successfully in a separate local
+check environment: Python 3.12.14, NumPy 2.3.5,
+Pandas 2.2.3, SciPy 1.15.2. All primary, randomization,
+sensitivity and six secondary scientific fields passed, as did generated
+statistics CSV self-hashes and semantic comparisons. The original scientific
+files were not overwritten. Six release-validation regression tests passed.
+
+The Wilcoxon result differed only in its last floating-point bit across
+library environments; statistics CSV byte hashes can therefore differ.
+Relative-tolerance comparisons (1e-12, zero absolute tolerance) retain checks
+of very small P values. This does not relax the two exact inference-artifact
+hash assertions. The full GPU inference was not rerun in this check; its
+prior author-side verification record remains separate.

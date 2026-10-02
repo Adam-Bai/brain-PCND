@@ -15,9 +15,62 @@ This repository contains:
 - portable release-organized source code;
 - an executable reproduction workflow.
 
+## Quick Start
+
+The executable chain starts from the released **derived external feature table**.
+It does not rerun raw-EEG extraction or development training.
+
+```bash
+git clone https://github.com/Adam-Bai/brain-PCND.git
+cd brain-PCND
+conda env create -f environment-minimal.yml
+conda activate pcnd-minimal
+python reproduce.py --mode audit
+python reproduce.py --mode statistics
+```
+
+`audit` checks frozen source, weights and features; `statistics` reruns the
+prespecified analysis in a temporary directory and compares **all** scientific
+JSON fields, including randomization, sensitivities and six secondary endpoints.
+The generated timestamp is excluded. Statistics CSV hashes are checked against
+the generated files themselves and CSV values are compared semantically; CSV
+serialization can differ across library versions. Inference hashes remain exact. Numerical comparisons use relative tolerance
+`1e-12` and zero absolute tolerance, so tiny P values cannot silently disappear.
+
+For full external inference, install PyTorch with a build compatible with your
+hardware and NVIDIA driver using the [official installation selector](https://pytorch.org/get-started/locally/), then run:
+
+```bash
+python reproduce.py --mode external
+```
+
+This mode must match both historical inference SHA256 values before running
+statistics. The author's recorded GPU runtime is about 154 minutes on RTX 3090;
+that runtime and exact byte reproduction have not been independently established
+for other hardware/environments. Audit and statistics do not require a GPU.
+
+The minimal environment describes the CPU dependency set. `environment.yml`,
+`requirements-lock.txt`, and `provenance/RUNTIME_INFO.txt` are the **historical
+full environment snapshot**, including Linux/CUDA packages and a server prefix;
+they are not a universal cross-platform installation recipe.
+
+Release integrity and regression checks:
+
+```bash
+python tools/build_release_manifest.py --check
+PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s tests -v
+```
+
+`provenance/RELEASE_MANIFEST_v1.0.csv` and `RELEASE_SHA256_v1.0.txt` cover release
+files other than themselves. The historical `provenance/SHA256SUMS.txt` is
+preserved. Software is Apache-2.0; see `DATA_AND_WEIGHTS_NOTICE.md` for separate
+checkpoint and derived-data permissions. Citation metadata is in `CITATION.cff`.
+
+---
+
 The central scientific question is:
 
-> Can sparse intracranial stimulation responses reconstruct patient-specific perturbational brain maps beyond a transferable anatomical prior?
+> Given the same sparse patient-specific observations and lower-order patient/node information, does preserving the correct stimulation-response correspondence provide additional information for reconstructing held-out perturbational maps?
 
 The supported claim is predictive rather than causal:
 
@@ -448,7 +501,7 @@ SHA256
 
 Both regenerated hashes exactly match the historical frozen inference manifest.
 
-This provides byte-level verification of the deterministic external inference artifacts.
+The author verification record provides byte-level matching of those inference artifacts. The release wrapper now enforces both hashes automatically on every successful external-mode run.
 
 ### Verified full reproduction runtime
 
@@ -680,12 +733,14 @@ requirements-lock.txt
 provenance/RUNTIME_INFO.txt
 ```
 
-Create the Conda environment with:
+For the minimal CPU environment, use:
 
 ```bash
-conda env create -f environment.yml
-conda activate pcnd
+conda env create -f environment-minimal.yml
+conda activate pcnd-minimal
 ```
+
+The full `environment.yml` is retained as a historical server snapshot, not a portable installation recommendation.
 
 The exact dependency lock is also preserved in:
 
@@ -763,7 +818,7 @@ Frozen-source integrity audit             PASS
 Checkpoint integrity audit                PASS
 External feature-table integrity audit    PASS
 Patient-level statistical reproduction    PASS
-Full 74-patient frozen inference           PASS
+Author-side full 74-patient inference     PASS
 Repeat-level historical SHA match          PASS
 Patient-summary historical SHA match       PASS
 Primary statistical reproduction           PASS
@@ -791,14 +846,12 @@ The relational contrast should be interpreted as predictive information in stimu
 
 # Citation
 
-Citation information will be updated with the versioned archival release associated with the manuscript.
-
-Until then, please cite the repository and the corresponding manuscript when available.
+Use `CITATION.cff` for software citation. Its maintainer entry is not a manuscript author list. Cite the repository/version and the corresponding manuscript when available. No archive DOI is claimed until assigned.
 
 ---
 
 # License
 
-A repository-level code license will be provided with the versioned release.
+Original software is licensed under Apache-2.0 (`LICENSE` and `NOTICE`). Checkpoint and derived-data permissions are separate; see `DATA_AND_WEIGHTS_NOTICE.md`.
 
 Licensing of the original OpenNeuro datasets is governed by their upstream dataset records and is not replaced by this repository.
